@@ -82,6 +82,7 @@ public class AuthenticationService {
 
     public AuthenticationResponse verify(VerifyRequest request) {
         var user = repository.findByVerificationToken(request.getToken()).orElseThrow();
+        System.out.println("User: " + user);
         if(user == null){
             return AuthenticationResponse.builder()
                     .error("Verification token is invalid")
@@ -105,6 +106,7 @@ public class AuthenticationService {
         var random = String.valueOf((int) ((Math.random() * (999999 - 100000)) + 100000));
         user.setVerificationToken(random);
         repository.save(user);
+        System.out.println("Sending email to: " + email + "Code:" + random);
         emailSender.sendEmail(email, "Hello and welcome to the Crypto Exchange", "Your code is: " + random);
         return AuthenticationResponse.builder()
                 .message("Check your email")
