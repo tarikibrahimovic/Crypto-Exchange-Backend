@@ -1,14 +1,12 @@
-package com.example.demo.auth;
+package com.example.demo.controllers;
 
-import com.example.demo.email.EmailSender;
-import com.example.demo.entity.User;
+import com.example.demo.requestResponse.auth.*;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.services.auth.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -28,7 +26,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> authenticate(
+    public ResponseEntity<LoginResponse> authenticate(
             @RequestBody AuthenticationRequest request
     ){
         return ResponseEntity.ok(service.login(request));

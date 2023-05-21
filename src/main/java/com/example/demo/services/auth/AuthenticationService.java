@@ -1,7 +1,8 @@
-package com.example.demo.auth;
+package com.example.demo.services.auth;
 
+import com.example.demo.requestResponse.auth.*;
 import com.example.demo.config.JwtService;
-import com.example.demo.email.EmailSender;
+import com.example.demo.services.email.EmailSender;
 import com.example.demo.entity.Role;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
@@ -42,24 +43,20 @@ public class AuthenticationService {
                 .build();
         emailSender.sendEmail(request.getEmail(), "Hello and welcome to the Crypto Exchange", "Your code is: " + random);
         repository.save(user);
-//        var jwtToken = jwtService.generateToken(user);
-//        return AuthenticationResponse.builder()
-//                .token(jwtToken)
-//                .build();
         return AuthenticationResponse.builder()
                 .message("Check your email")
                 .build();
     }
 
-    public AuthenticationResponse login(AuthenticationRequest request) {
+    public LoginResponse login(AuthenticationRequest request) {
         var user = repository.findByEmail(request.getEmail()).orElseThrow();
         if(user == null){
-            return AuthenticationResponse.builder()
+            return LoginResponse.builder()
                     .error("User does not exist")
                     .build();
         }
         if(user.getVerificationToken() != null){
-            return AuthenticationResponse.builder()
+            return LoginResponse.builder()
                     .username(user.getUsername())
                     .email(user.getEmail())
                     .role(user.getRole().name())
@@ -72,11 +69,13 @@ public class AuthenticationService {
                 )
         );
         var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
+        var favorites = user.getFavorites();
+        return LoginResponse.builder()
                 .token(jwtToken)
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .role(user.getRole().name())
+                .favorites(favorites)
                 .build();
     }
 
@@ -106,7 +105,6 @@ public class AuthenticationService {
         var random = String.valueOf((int) ((Math.random() * (999999 - 100000)) + 100000));
         user.setVerificationToken(random);
         repository.save(user);
-        System.out.println("Sending email to: " + email + "Code:" + random);
         emailSender.sendEmail(email, "Hello and welcome to the Crypto Exchange", "Your code is: " + random);
         return AuthenticationResponse.builder()
                 .message("Check your email")

@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Builder
@@ -38,6 +39,31 @@ public class User implements UserDetails {
     private String password;
     @Column(nullable = true)
     private String pictureUrl;
+
+    @ManyToMany(
+            cascade = CascadeType.ALL
+    )
+    @JoinTable(
+            name = "user_favorites_map",
+            joinColumns = @JoinColumn(
+                    name = "user_id",
+                    referencedColumnName = "id"
+            ),
+            inverseJoinColumns = @JoinColumn(
+                    name = "favorites_id",
+                    referencedColumnName = "id"
+            )
+    )
+    private List<Favorites> favorites;
+
+    public void addFavorites(Favorites favorite){
+        if (favorites == null) favorites = new ArrayList<>();
+        if(!favorites.contains(favorite))
+            favorites.add(favorite);
+    }
+    public void removeFavorites(Favorites favorite) {
+        favorites.remove(favorite);
+    }
 
     @Column(nullable = true)
     private String verificationToken;
