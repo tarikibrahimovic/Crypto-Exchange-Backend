@@ -39,7 +39,8 @@ public class User implements UserDetails {
     private String password;
     @Column(nullable = true)
     private String pictureUrl;
-
+    @Column(nullable = true)
+    private Double balance = 0.0;
     @ManyToMany(
             cascade = CascadeType.ALL
     )
@@ -73,6 +74,24 @@ public class User implements UserDetails {
 
     @Column(nullable = true)
     private String forgotPasswordToken;
+
+    @OneToMany(
+            cascade = CascadeType.ALL
+    )
+    @JoinColumn(
+            name = "user_id",
+            referencedColumnName = "id"
+    )
+    private List<Exchange> exchanges;
+
+    public void addExchange(Exchange exchange){
+        if (exchanges == null) exchanges = new ArrayList<>();
+            exchanges.add(exchange);
+    }
+
+    public void removeExchange(Exchange exchange){
+        exchanges.remove(exchange);
+    }
 
     @Enumerated(EnumType.STRING)
     private Role role;

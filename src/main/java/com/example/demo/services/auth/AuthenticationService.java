@@ -19,7 +19,6 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-
     private final EmailSender emailSender;
 
     public AuthenticationResponse register(RegisterRequest request) {
@@ -69,13 +68,15 @@ public class AuthenticationService {
                 )
         );
         var jwtToken = jwtService.generateToken(user);
-        var favorites = user.getFavorites();
         return LoginResponse.builder()
                 .token(jwtToken)
                 .username(user.getUsername())
                 .email(user.getEmail())
+                .balance(user.getBalance())
                 .role(user.getRole().name())
-                .favorites(favorites)
+                .favorites(user.getFavorites())
+                .balance(user.getBalance())
+                .exchanges(user.getExchanges())
                 .build();
     }
 

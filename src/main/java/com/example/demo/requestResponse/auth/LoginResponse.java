@@ -1,5 +1,6 @@
 package com.example.demo.requestResponse.auth;
 
+import com.example.demo.entity.Exchange;
 import com.example.demo.entity.Favorites;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,8 @@ public class LoginResponse {
     private String token;
     private String username;
     private String email;
+    private Double balance;
+    private List<Exchange> exchanges;
     private String role;
     private List<Favorites> favorites;
     private String message;

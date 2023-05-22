@@ -46,6 +46,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.sendEmail(email));
     }
 
+
     private String buildEmail(String name, String link) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +

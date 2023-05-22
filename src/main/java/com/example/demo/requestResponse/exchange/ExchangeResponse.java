@@ -1,5 +1,4 @@
-package com.example.demo.requestResponse.auth;
-
+package com.example.demo.requestResponse.exchange;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,9 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
-
-    private String token;
+public class ExchangeResponse {
     private String message;
     private String error;
 }
