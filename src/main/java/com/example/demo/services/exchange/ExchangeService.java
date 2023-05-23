@@ -25,6 +25,8 @@ public class ExchangeService {
                 repository.save(exchange);
                 return ExchangeResponse.builder()
                         .message(request.getCoinAmount() + " coins bought")
+                        .balance(user.getBalance())
+                        .exchanges(user.getExchanges())
                         .build();
             }
         }
@@ -44,6 +46,8 @@ public class ExchangeService {
 
         return ExchangeResponse.builder()
                 .message("Coin bought")
+                .balance(user.getBalance())
+                .exchanges(user.getExchanges())
                 .build();
     }
 
@@ -56,6 +60,8 @@ public class ExchangeService {
             repository.save(exchange);
             return ExchangeResponse.builder()
                     .message(request.getCoinAmount() + " coins sold")
+                    .balance(user.getBalance())
+                    .exchanges(user.getExchanges())
                     .build();
         }
         else{
@@ -63,6 +69,8 @@ public class ExchangeService {
             user.removeExchange(exchange);
             return ExchangeResponse.builder()
                     .message("Coin sold")
+                    .balance(user.getBalance())
+                    .exchanges(user.getExchanges())
                     .build();
         }
 
