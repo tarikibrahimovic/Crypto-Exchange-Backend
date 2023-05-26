@@ -1,4 +1,4 @@
-package com.example.demo.requestResponse.auth;
+package com.example.demo.data.requestResponse.auth;
 
 import lombok.*;
 

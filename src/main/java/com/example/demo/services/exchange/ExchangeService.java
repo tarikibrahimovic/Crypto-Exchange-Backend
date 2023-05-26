@@ -1,12 +1,11 @@
 package com.example.demo.services.exchange;
 
 import com.example.demo.config.JwtService;
-import com.example.demo.entity.Exchange;
-import com.example.demo.entity.User;
-import com.example.demo.repository.ExchangeRepository;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.requestResponse.exchange.ExchangeRequest;
-import com.example.demo.requestResponse.exchange.ExchangeResponse;
+import com.example.demo.data.entity.Exchange;
+import com.example.demo.data.repository.ExchangeRepository;
+import com.example.demo.data.repository.UserRepository;
+import com.example.demo.data.requestResponse.exchange.ExchangeRequest;
+import com.example.demo.data.requestResponse.exchange.ExchangeResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +20,7 @@ public class ExchangeService {
         for(var exchange : user.getExchanges()){
             if(exchange.getCoinId().equals(request.getCoinId())){
                 exchange.setCoinAmount(exchange.getCoinAmount() + request.getCoinAmount());
+                exchange.setCoinPrice((request.getCoinPrice() + exchange.getCoinPrice()) / 2);
                 user.setBalance(user.getBalance() - request.getCoinAmount() * request.getCoinPrice());
                 repository.save(exchange);
                 return ExchangeResponse.builder()
@@ -39,6 +39,7 @@ public class ExchangeService {
         user.setBalance(user.getBalance() - request.getCoinAmount() * request.getCoinPrice());
         var exchange = Exchange.builder()
                 .coinId(request.getCoinId())
+                .coinPrice(request.getCoinPrice())
                 .coinAmount(request.getCoinAmount())
                 .build();
         user.addExchange(exchange);

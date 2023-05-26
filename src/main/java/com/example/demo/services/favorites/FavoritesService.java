@@ -1,15 +1,13 @@
 package com.example.demo.services.favorites;
 
 import com.example.demo.config.JwtService;
-import com.example.demo.entity.Favorites;
-import com.example.demo.repository.FavoritesRepository;
-import com.example.demo.repository.UserRepository;
-import com.example.demo.requestResponse.auth.AuthenticationResponse;
-import com.example.demo.requestResponse.favorites.AddFavoriteRequest;
+import com.example.demo.data.entity.Favorites;
+import com.example.demo.data.repository.FavoritesRepository;
+import com.example.demo.data.repository.UserRepository;
+import com.example.demo.data.requestResponse.auth.AuthenticationResponse;
+import com.example.demo.data.requestResponse.favorites.AddFavoriteRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

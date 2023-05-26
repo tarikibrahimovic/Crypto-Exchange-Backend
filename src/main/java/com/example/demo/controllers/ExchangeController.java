@@ -1,7 +1,7 @@
 package com.example.demo.controllers;
 
-import com.example.demo.requestResponse.exchange.ExchangeRequest;
-import com.example.demo.requestResponse.exchange.ExchangeResponse;
+import com.example.demo.data.requestResponse.exchange.ExchangeRequest;
+import com.example.demo.data.requestResponse.exchange.ExchangeResponse;
 import com.example.demo.services.exchange.ExchangeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

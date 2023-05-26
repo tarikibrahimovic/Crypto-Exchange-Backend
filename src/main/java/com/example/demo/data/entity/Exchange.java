@@ -1,4 +1,4 @@
-package com.example.demo.entity;
+package com.example.demo.data.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,5 +28,8 @@ public class Exchange {
 
     @Column(nullable = false)
     private String coinId;
+
+    @Column(nullable = false)
+    private Double coinPrice;
 
 }

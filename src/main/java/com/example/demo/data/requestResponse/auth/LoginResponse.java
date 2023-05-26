@@ -1,7 +1,7 @@
-package com.example.demo.requestResponse.auth;
+package com.example.demo.data.requestResponse.auth;
 
-import com.example.demo.entity.Exchange;
-import com.example.demo.entity.Favorites;
+import com.example.demo.data.entity.Exchange;
+import com.example.demo.data.entity.Favorites;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +19,7 @@ public class LoginResponse {
     private String email;
     private Double balance;
     private List<Exchange> exchanges;
+    private String pictureUrl;
     private String role;
     private List<Favorites> favorites;
     private String message;

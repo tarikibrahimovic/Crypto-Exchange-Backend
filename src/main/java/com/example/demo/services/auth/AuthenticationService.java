@@ -1,11 +1,11 @@
 package com.example.demo.services.auth;
 
-import com.example.demo.requestResponse.auth.*;
+import com.example.demo.data.requestResponse.auth.*;
 import com.example.demo.config.JwtService;
 import com.example.demo.services.email.EmailSender;
-import com.example.demo.entity.Role;
-import com.example.demo.entity.User;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.data.entity.Role;
+import com.example.demo.data.entity.User;
+import com.example.demo.data.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -37,6 +37,7 @@ public class AuthenticationService {
                 .username(request.getUsername())
                 .verificationToken(random)
                 .email(request.getEmail())
+                .pictureUrl("")
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .build();
@@ -67,6 +68,11 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
+        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())){
+            return LoginResponse.builder()
+                    .error("Wrong password")
+                    .build();
+        }
         var jwtToken = jwtService.generateToken(user);
         return LoginResponse.builder()
                 .token(jwtToken)
@@ -74,6 +80,7 @@ public class AuthenticationService {
                 .email(user.getEmail())
                 .balance(user.getBalance())
                 .role(user.getRole().name())
+                .pictureUrl(user.getPictureUrl())
                 .favorites(user.getFavorites())
                 .balance(user.getBalance())
                 .exchanges(user.getExchanges())

@@ -1,4 +1,4 @@
-package com.example.demo.requestResponse.user;
+package com.example.demo.data.requestResponse.favorites;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class BalanceRequest {
-    private Double amount;
+@AllArgsConstructor
+public class AddFavoriteRequest {
+    private String coinId;
 }

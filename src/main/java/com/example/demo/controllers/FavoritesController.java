@@ -1,8 +1,7 @@
 package com.example.demo.controllers;
 
-import com.example.demo.requestResponse.auth.AuthenticationResponse;
-import com.example.demo.requestResponse.favorites.AddFavoriteRequest;
-import com.example.demo.services.auth.AuthenticationService;
+import com.example.demo.data.requestResponse.auth.AuthenticationResponse;
+import com.example.demo.data.requestResponse.favorites.AddFavoriteRequest;
 import com.example.demo.services.favorites.FavoritesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

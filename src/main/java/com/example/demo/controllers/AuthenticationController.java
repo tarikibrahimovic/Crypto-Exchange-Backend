@@ -1,7 +1,7 @@
 package com.example.demo.controllers;
 
-import com.example.demo.requestResponse.auth.*;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.data.requestResponse.auth.*;
+import com.example.demo.data.repository.UserRepository;
 import com.example.demo.services.auth.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

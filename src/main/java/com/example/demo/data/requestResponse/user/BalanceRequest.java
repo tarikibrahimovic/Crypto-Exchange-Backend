@@ -1,5 +1,4 @@
-package com.example.demo.requestResponse.auth;
-
+package com.example.demo.data.requestResponse.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,9 +9,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
-
-    private String token;
-    private String message;
-    private String error;
+public class BalanceRequest {
+    private Double amount;
 }

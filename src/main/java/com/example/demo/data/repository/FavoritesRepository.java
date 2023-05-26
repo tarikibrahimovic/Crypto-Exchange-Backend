@@ -1,10 +1,9 @@
-package com.example.demo.repository;
+package com.example.demo.data.repository;
 
-import com.example.demo.entity.Favorites;
+import com.example.demo.data.entity.Favorites;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
-import java.util.List;
 
 public interface FavoritesRepository extends JpaRepository<Favorites, Long> {
 

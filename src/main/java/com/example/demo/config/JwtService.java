@@ -1,6 +1,6 @@
 package com.example.demo.config;
 
-import com.example.demo.repository.UserRepository;
+import com.example.demo.data.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

@@ -1,4 +1,4 @@
-package com.example.demo.requestResponse.favorites;
+package com.example.demo.data.requestResponse.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class AddFavoriteRequest {
-    private String coinId;
+@NoArgsConstructor
+public class ChangeUsernameRequest {
+    private String username;
 }
