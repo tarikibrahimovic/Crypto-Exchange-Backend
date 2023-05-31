@@ -23,7 +23,5 @@ public class EmailService implements EmailSender{
         mailMessage.setFrom("cryptoproj@gmail.com");
 
         mailSender.send(mailMessage);
-
-        System.out.println("Email sent");
     }
 }

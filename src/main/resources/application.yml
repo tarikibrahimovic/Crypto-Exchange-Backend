@@ -17,6 +17,9 @@ spring:
     username: tarikibrahimovic2016@gmail.com
     password: kmhikbyzxwtcvoxk
 
+  cloudinary:
+    CLOUDINARY_URL: cloudinary://619781217835657:zSGen1-d99dsWYZ-x01JSOrxm2g@du9hzqeoa
+
     properties:
       mail:
         smtp:

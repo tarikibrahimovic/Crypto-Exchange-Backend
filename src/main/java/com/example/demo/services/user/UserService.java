@@ -1,16 +1,19 @@
 package com.example.demo.services.user;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import com.example.demo.config.JwtService;
 import com.example.demo.data.repository.UserRepository;
 import com.example.demo.data.requestResponse.auth.AuthenticationResponse;
 import com.example.demo.data.requestResponse.auth.LoginResponse;
-import com.example.demo.data.requestResponse.user.BalanceRequest;
-import com.example.demo.data.requestResponse.user.BalanceResponse;
-import com.example.demo.data.requestResponse.user.ChangePasswordRequest;
-import com.example.demo.data.requestResponse.user.ChangeUsernameRequest;
+import com.example.demo.data.requestResponse.user.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +22,8 @@ public class UserService {
     private final UserRepository repository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    @Value("${spring.cloudinary.CLOUDINARY_URL}")
+    private String CLOUDINARY_URL;
     public BalanceResponse balanceAdd(BalanceRequest request, String token) {
         var user = repository.findById(jwtService.extractId(token)).orElseThrow();
         if(user.getBalance() == null){
@@ -78,19 +83,74 @@ public class UserService {
     }
 
     public LoginResponse refresh(String token) {
+        try{
+            var user = repository.findById(jwtService.extractId(token)).orElseThrow();
+            var jwtToken = jwtService.generateToken(user);
+            System.out.println("refreshed");
+            return LoginResponse.builder()
+                    .token(jwtToken)
+                    .username(user.getUsername())
+                    .email(user.getEmail())
+                    .balance(user.getBalance())
+                    .role(user.getRole().name())
+                    .pictureUrl(user.getPictureUrl())
+                    .favorites(user.getFavorites())
+                    .balance(user.getBalance())
+                    .exchanges(user.getExchanges())
+                    .build();
+        }
+        catch (Exception e){
+            return LoginResponse.builder()
+                    .error("Invalid token")
+                    .build();
+        }
+    }
+
+    public ImageResponse uploadImage(MultipartFile image, String token) {
+        Cloudinary cloudinary = new Cloudinary(CLOUDINARY_URL);
         var user = repository.findById(jwtService.extractId(token)).orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
-        System.out.println("refreshed");
-        return LoginResponse.builder()
-                .token(jwtToken)
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .balance(user.getBalance())
-                .role(user.getRole().name())
-                .pictureUrl(user.getPictureUrl())
-                .favorites(user.getFavorites())
-                .balance(user.getBalance())
-                .exchanges(user.getExchanges())
-                .build();
+        try {
+            if(user.getPictureUrl().length() > 1){
+                var publicId = user.getPictureUrl().substring(user.getPictureUrl().lastIndexOf("/") + 1, user.getPictureUrl().lastIndexOf("."));
+                cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+            }
+            Map uploadResult = cloudinary.uploader().upload(image.getBytes(), ObjectUtils.emptyMap());
+            System.out.println(uploadResult);
+            user.setPictureUrl(uploadResult.get("url").toString());
+            repository.save(user);
+            return ImageResponse.builder()
+                    .message("Image uploaded")
+                    .pictureUrl(uploadResult.get("url").toString())
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ImageResponse.builder()
+                    .error("Image upload failed")
+                    .build();
+        }
+    }
+
+    public ImageResponse deleteImage(String token) {
+        Cloudinary cloudinary = new Cloudinary(CLOUDINARY_URL);
+        var user = repository.findById(jwtService.extractId(token)).orElseThrow();
+        try {
+            if(user.getPictureUrl() != null){
+                var publicId = user.getPictureUrl().substring(user.getPictureUrl().lastIndexOf("/") + 1, user.getPictureUrl().lastIndexOf("."));
+                cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+                user.setPictureUrl(null);
+                repository.save(user);
+                return ImageResponse.builder()
+                        .message("Image deleted")
+                        .build();
+            }
+            return ImageResponse.builder()
+                    .error("No image to delete")
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ImageResponse.builder()
+                    .error("Image delete failed")
+                    .build();
+        }
     }
 }

@@ -2,14 +2,14 @@ package com.example.demo.controllers;
 
 import com.example.demo.data.requestResponse.auth.AuthenticationResponse;
 import com.example.demo.data.requestResponse.auth.LoginResponse;
-import com.example.demo.data.requestResponse.user.BalanceRequest;
-import com.example.demo.data.requestResponse.user.BalanceResponse;
-import com.example.demo.data.requestResponse.user.ChangePasswordRequest;
-import com.example.demo.data.requestResponse.user.ChangeUsernameRequest;
+import com.example.demo.data.requestResponse.user.*;
 import com.example.demo.services.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.awt.*;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -60,5 +60,23 @@ public class UserController {
     ){
         String token = authHeader.replace("Bearer ", "");
         return ResponseEntity.ok(service.refresh(token));
+    }
+
+    @PostMapping("/uploadImage")
+    public ResponseEntity<ImageResponse> uploadImage(
+            @RequestParam("image") MultipartFile image,
+            @RequestHeader("Authorization") String authHeader
+    ){
+
+        String token = authHeader.replace("Bearer ", "");
+        return ResponseEntity.ok(service.uploadImage(image, token));
+    }
+
+    @DeleteMapping("/deleteImage")
+    public ResponseEntity<ImageResponse> deleteImage(
+            @RequestHeader("Authorization") String authHeader
+    ){
+        String token = authHeader.replace("Bearer ", "");
+        return ResponseEntity.ok(service.deleteImage(token));
     }
 }
