@@ -41,7 +41,10 @@ public class AuthenticationService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .build();
-        emailSender.sendEmail(request.getEmail(), "Hello and welcome to the Crypto Exchange", "Your code is: " + random);
+        emailSender.sendEmail(request.getEmail(), "Hello and welcome to the Crypto Exchange", "Hello " + user.getUsername() + ",\n\n" +
+                "Your code is: " + random + "\n\n" +
+                "Best regards,\n" +
+                "Crypto Exchange Team");
         repository.save(user);
         return AuthenticationResponse.builder()
                 .message("Check your email")
@@ -89,7 +92,6 @@ public class AuthenticationService {
 
     public AuthenticationResponse verify(VerifyRequest request) {
         var user = repository.findByVerificationToken(request.getToken()).orElseThrow();
-        System.out.println("User: " + user);
         if(user == null){
             return AuthenticationResponse.builder()
                     .error("Verification token is invalid")
@@ -103,17 +105,25 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse sendEmail(String email) {
-        var user = repository.findByEmail(email).orElseThrow();
+    public AuthenticationResponse sendEmail(SendEmailRequest email) {
+        var user = repository.findByEmail(email.getEmail()).orElseThrow();
         if(user == null){
             return AuthenticationResponse.builder()
                     .error("User does not exist")
                     .build();
         }
+        if(user.getVerificationToken() == null){
+            return AuthenticationResponse.builder()
+                    .error("Email is already verified")
+                    .build();
+        }
         var random = String.valueOf((int) ((Math.random() * (999999 - 100000)) + 100000));
         user.setVerificationToken(random);
         repository.save(user);
-        emailSender.sendEmail(email, "Hello and welcome to the Crypto Exchange", "Your code is: " + random);
+        emailSender.sendEmail(email.getEmail(), "Hello and welcome to the Crypto Exchange", "Hello " + user.getUsername() + ",\n\n" +
+                "Your code is: " + random + "\n\n" +
+                "Best regards,\n" +
+                "Crypto Exchange Team");
         return AuthenticationResponse.builder()
                 .message("Check your email")
                 .build();

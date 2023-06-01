@@ -15,15 +15,12 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: tarikibrahimovic2016@gmail.com
-    password: kmhikbyzxwtcvoxk
-
-  cloudinary:
-    CLOUDINARY_URL: cloudinary://619781217835657:zSGen1-d99dsWYZ-x01JSOrxm2g@du9hzqeoa
-
+    password: bbewzvegsfmlcdhf
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
-
+  cloudinary:
+    CLOUDINARY_URL: cloudinary://619781217835657:zSGen1-d99dsWYZ-x01JSOrxm2g@du9hzqeoa

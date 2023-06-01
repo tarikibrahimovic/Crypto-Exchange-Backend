@@ -86,7 +86,6 @@ public class UserService {
         try{
             var user = repository.findById(jwtService.extractId(token)).orElseThrow();
             var jwtToken = jwtService.generateToken(user);
-            System.out.println("refreshed");
             return LoginResponse.builder()
                     .token(jwtToken)
                     .username(user.getUsername())
@@ -110,12 +109,11 @@ public class UserService {
         Cloudinary cloudinary = new Cloudinary(CLOUDINARY_URL);
         var user = repository.findById(jwtService.extractId(token)).orElseThrow();
         try {
-            if(user.getPictureUrl().length() > 1){
+            if(user.getPictureUrl() != null){
                 var publicId = user.getPictureUrl().substring(user.getPictureUrl().lastIndexOf("/") + 1, user.getPictureUrl().lastIndexOf("."));
                 cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
             }
             Map uploadResult = cloudinary.uploader().upload(image.getBytes(), ObjectUtils.emptyMap());
-            System.out.println(uploadResult);
             user.setPictureUrl(uploadResult.get("url").toString());
             repository.save(user);
             return ImageResponse.builder()
