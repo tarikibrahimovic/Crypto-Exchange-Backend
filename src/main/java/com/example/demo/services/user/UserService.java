@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Blob;
 import java.util.Map;
 
 @Service
@@ -107,6 +108,7 @@ public class UserService {
 
     public ImageResponse uploadImage(MultipartFile image, String token) {
         Cloudinary cloudinary = new Cloudinary(CLOUDINARY_URL);
+        System.out.println(CLOUDINARY_URL);
         var user = repository.findById(jwtService.extractId(token)).orElseThrow();
         try {
             if(user.getPictureUrl() != null){

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.*;
+import java.sql.Blob;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -64,13 +65,15 @@ public class UserController {
 
     @PostMapping("/uploadImage")
     public ResponseEntity<ImageResponse> uploadImage(
+//            @RequestParam("image") Blob image,
             @RequestParam("image") MultipartFile image,
             @RequestHeader("Authorization") String authHeader
     ){
-
+        System.out.println("Doslo je do kontrolera");
         String token = authHeader.replace("Bearer ", "");
         return ResponseEntity.ok(service.uploadImage(image, token));
     }
+
 
     @DeleteMapping("/deleteImage")
     public ResponseEntity<ImageResponse> deleteImage(
