@@ -107,25 +107,84 @@ public class AuthenticationService {
 
     public AuthenticationResponse sendEmail(SendEmailRequest email) {
         var user = repository.findByEmail(email.getEmail()).orElseThrow();
+        System.out.println(email.getType());
         if(user == null){
             return AuthenticationResponse.builder()
                     .error("User does not exist")
                     .build();
         }
-        if(user.getVerificationToken() == null){
-            return AuthenticationResponse.builder()
-                    .error("Email is already verified")
-                    .build();
-        }
         var random = String.valueOf((int) ((Math.random() * (999999 - 100000)) + 100000));
-        user.setVerificationToken(random);
-        repository.save(user);
-        emailSender.sendEmail(email.getEmail(), "Hello and welcome to the Crypto Exchange", "Hello " + user.getUsername() + ",\n\n" +
-                "Your code is: " + random + "\n\n" +
-                "Best regards,\n" +
-                "Crypto Exchange Team");
+        if(email.getType() == "Verification"){
+            if(user.getVerificationToken() == null){
+                return AuthenticationResponse.builder()
+                        .error("Email is already verified")
+                        .build();
+            }
+            user.setVerificationToken(random);
+            repository.save(user);
+            emailSender.sendEmail(email.getEmail(), "Hello and welcome to the Crypto Exchange", "Hello " + user.getUsername() + ",\n\n" +
+                    "Your code is: " + random + "\n\n" +
+                    "Best regards,\n" +
+                    "Crypto Exchange Team");
+        }
+        else {
+            System.out.println("ForgotPassword");
+            emailSender.sendEmail(email.getEmail(), "Hello and welcome to the Crypto Exchange", "Hello " + user.getUsername() + ",\n\n" +
+                    "Your ForgotPassword Token is: " + random + "\n\n" +
+                    "Best regards,\n" +
+                    "Crypto Exchange Team");
+            user.setForgotPasswordToken(random);
+            repository.save(user);
+        }
         return AuthenticationResponse.builder()
                 .message("Check your email")
+                .build();
+    }
+
+    public AuthenticationResponse forgotPassword(ForgotPasswordRequest request) {
+        var user = repository.findByEmail(request.getEmail()).orElseThrow();
+        if(user == null){
+            return AuthenticationResponse.builder()
+                    .error("User does not exist")
+                    .build();
+        }
+        if(user.getForgotPasswordToken() == null){
+            return AuthenticationResponse.builder()
+                    .error("ForgotPassword token is invalid")
+                    .build();
+        }
+        if(!user.getForgotPasswordToken().equals(request.getToken())){
+            return AuthenticationResponse.builder()
+                    .error("ForgotPassword token is invalid")
+                    .build();
+        }
+        user.setForgotPasswordToken(null);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        repository.save(user);
+        return AuthenticationResponse.builder()
+                .message("Your password is changed")
+                .build();
+    }
+
+    public AuthenticationResponse checkForgotPasswordToken(CheckForgotPasswordTokenRequest request) {
+        var user = repository.findByEmail(request.getEmail()).orElseThrow();
+        if(user == null){
+            return AuthenticationResponse.builder()
+                    .error("User does not exist")
+                    .build();
+        }
+        if(user.getForgotPasswordToken() == null){
+            return AuthenticationResponse.builder()
+                    .error("ForgotPassword token is invalid")
+                    .build();
+        }
+        if(!user.getForgotPasswordToken().equals(request.getToken())){
+            return AuthenticationResponse.builder()
+                    .error("ForgotPassword token is invalid")
+                    .build();
+        }
+        return AuthenticationResponse.builder()
+                .message("ForgotPassword token is valid")
                 .build();
     }
 }

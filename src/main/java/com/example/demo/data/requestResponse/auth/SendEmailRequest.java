@@ -10,4 +10,5 @@ import lombok.*;
 @Setter
 public class SendEmailRequest {
     private String email;
+    private String type;
 }

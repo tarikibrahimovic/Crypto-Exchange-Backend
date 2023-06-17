@@ -25,6 +25,14 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.register(request));
     }
 
+    @GetMapping("/proba")
+    public ResponseEntity<String> nesto(
+            @RequestBody RegisterRequest request
+    ){
+        System.out.println("nesto");
+        return ResponseEntity.ok("nesto");
+    }
+
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(
             @RequestBody AuthenticationRequest request
@@ -44,6 +52,20 @@ public class AuthenticationController {
             @RequestBody SendEmailRequest email
     ){
         return ResponseEntity.ok(service.sendEmail(email));
+    }
+
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<AuthenticationResponse> forgotPassword(
+            @RequestBody ForgotPasswordRequest request
+    ){
+        return ResponseEntity.ok(service.forgotPassword(request));
+    }
+
+    @PostMapping("/checkForgotPasswordToken")
+    public ResponseEntity<AuthenticationResponse> checkForgotPasswordToken(
+            @RequestBody CheckForgotPasswordTokenRequest request
+    ){
+        return ResponseEntity.ok(service.checkForgotPasswordToken(request));
     }
 
 }
