@@ -84,6 +84,8 @@ public class User implements UserDetails {
     )
     private List<Exchange> exchanges;
 
+    private String type;
+
     public void addExchange(Exchange exchange){
         if (exchanges == null) exchanges = new ArrayList<>();
             exchanges.add(exchange);

@@ -96,6 +96,7 @@ public class UserService {
                     .pictureUrl(user.getPictureUrl())
                     .favorites(user.getFavorites())
                     .balance(user.getBalance())
+                    .type(user.getType())
                     .exchanges(user.getExchanges())
                     .build();
         }

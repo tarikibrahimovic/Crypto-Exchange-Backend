@@ -57,6 +57,9 @@ public class JwtService {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", id);
 
+        System.out.println("id: " + id);
+        System.out.println("details: " + userDetails);
+
         return Jwts
                 .builder()
                 .setClaims(claims)

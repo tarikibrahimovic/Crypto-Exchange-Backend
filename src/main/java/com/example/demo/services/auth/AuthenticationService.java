@@ -38,6 +38,7 @@ public class AuthenticationService {
                 .verificationToken(random)
                 .email(request.getEmail())
                 .pictureUrl("")
+                .type("Email")
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
                 .build();
@@ -77,11 +78,13 @@ public class AuthenticationService {
                     .build();
         }
         var jwtToken = jwtService.generateToken(user);
+        System.out.println("jwtToken");
         return LoginResponse.builder()
                 .token(jwtToken)
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .balance(user.getBalance())
+                .type(user.getType())
                 .role(user.getRole().name())
                 .pictureUrl(user.getPictureUrl())
                 .favorites(user.getFavorites())
@@ -205,6 +208,7 @@ public class AuthenticationService {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .role(user.getRole().name())
+                .type(user.getType())
                 .pictureUrl(user.getPictureUrl())
                 .favorites(user.getFavorites())
                 .balance(user.getBalance())
@@ -223,6 +227,7 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .pictureUrl(request.getPictureUrl())
                 .password(passwordEncoder.encode(request.getPassword()))
+                .type("Google")
                 .role(Role.USER)
                 .build();
         repository.save(user);
@@ -234,6 +239,7 @@ public class AuthenticationService {
                 .pictureUrl(user.getPictureUrl())
                 .favorites(user.getFavorites())
                 .balance(0.0)
+                .type("Google")
                 .exchanges(user.getExchanges())
                 .build();
     }
