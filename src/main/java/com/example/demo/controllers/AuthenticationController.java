@@ -25,12 +25,18 @@ public class AuthenticationController {
         return ResponseEntity.ok(service.register(request));
     }
 
-    @GetMapping("/proba")
-    public ResponseEntity<String> nesto(
-            @RequestBody RegisterRequest request
+    @PostMapping("/registerGoogle")
+    public ResponseEntity<LoginResponse> registerGoogle(
+            @RequestBody GoogleRegisterRequest request
     ){
-        System.out.println("nesto");
-        return ResponseEntity.ok("nesto");
+        return ResponseEntity.ok(service.registerGoogle(request));
+    }
+
+    @PostMapping("/google")
+    public ResponseEntity<LoginResponse> google(
+            @RequestBody GoogleRegisterRequest request
+    ){
+        return ResponseEntity.ok(service.google(request));
     }
 
     @PostMapping("/login")

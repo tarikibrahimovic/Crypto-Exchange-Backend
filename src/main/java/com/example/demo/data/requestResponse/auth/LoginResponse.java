@@ -24,4 +24,5 @@ public class LoginResponse {
     private List<Favorites> favorites;
     private String message;
     private String error;
+    private String type = "";
 }

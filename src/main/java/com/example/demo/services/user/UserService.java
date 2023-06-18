@@ -153,4 +153,19 @@ public class UserService {
                     .build();
         }
     }
+
+    public BalanceResponse withdraw(BalanceRequest request, String token) {
+        var user = repository.findById(jwtService.extractId(token)).orElseThrow();
+        if(user.getBalance() == null || user.getBalance() < request.getAmount()){
+            return BalanceResponse.builder()
+                    .error("Not enough balance")
+                    .build();
+        }
+        user.setBalance(user.getBalance() - request.getAmount());
+        repository.save(user);
+        return BalanceResponse.builder()
+                .balance(user.getBalance())
+                .message("Balance withdrawn")
+                .build();
+    }
 }

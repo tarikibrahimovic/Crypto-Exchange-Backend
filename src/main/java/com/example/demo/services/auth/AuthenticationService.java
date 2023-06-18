@@ -128,7 +128,6 @@ public class AuthenticationService {
                     "Crypto Exchange Team");
         }
         else {
-            System.out.println("ForgotPassword");
             emailSender.sendEmail(email.getEmail(), "Hello and welcome to the Crypto Exchange", "Hello " + user.getUsername() + ",\n\n" +
                     "Your ForgotPassword Token is: " + random + "\n\n" +
                     "Best regards,\n" +
@@ -185,6 +184,57 @@ public class AuthenticationService {
         }
         return AuthenticationResponse.builder()
                 .message("ForgotPassword token is valid")
+                .build();
+    }
+
+    public LoginResponse google(GoogleRegisterRequest request) {
+        var user = repository.findByEmail(request.getEmail()).orElseThrow();
+        System.out.println(request.getEmail());
+        if(user == null){
+            return LoginResponse.builder()
+                    .error("User does not exist")
+                    .build();
+        }
+        if(!passwordEncoder.matches(request.getPassword(), user.getPassword())){
+            return LoginResponse.builder()
+                    .error("Wrong password")
+                    .build();
+        }
+        return LoginResponse.builder()
+                .token(jwtService.generateToken(user))
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .role(user.getRole().name())
+                .pictureUrl(user.getPictureUrl())
+                .favorites(user.getFavorites())
+                .balance(user.getBalance())
+                .exchanges(user.getExchanges())
+                .build();
+    }
+
+    public LoginResponse registerGoogle(GoogleRegisterRequest request) {
+        if(repository.existsByEmail(request.getEmail())){
+            return LoginResponse.builder()
+                    .error("Email is already taken")
+                    .build();
+        }
+        var user = User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .pictureUrl(request.getPictureUrl())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.USER)
+                .build();
+        repository.save(user);
+        return LoginResponse.builder()
+                .token(jwtService.generateToken(user))
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .role(user.getRole().name())
+                .pictureUrl(user.getPictureUrl())
+                .favorites(user.getFavorites())
+                .balance(0.0)
+                .exchanges(user.getExchanges())
                 .build();
     }
 }

@@ -55,6 +55,15 @@ public class UserController {
         return ResponseEntity.ok(service.deleteAccount(request, token));
     }
 
+    @PostMapping("/withdraw")
+    public ResponseEntity<BalanceResponse> withdraw(
+            @RequestBody BalanceRequest request,
+            @RequestHeader("Authorization") String authHeader
+    ){
+        String token = authHeader.replace("Bearer ", "");
+        return ResponseEntity.ok(service.withdraw(request, token));
+    }
+
     @GetMapping("/refresh")
     public ResponseEntity<LoginResponse> refresh(
             @RequestHeader("Authorization") String authHeader
@@ -65,7 +74,6 @@ public class UserController {
 
     @PostMapping("/uploadImage")
     public ResponseEntity<ImageResponse> uploadImage(
-//            @RequestParam("image") Blob image,
             @RequestParam("image") MultipartFile image,
             @RequestHeader("Authorization") String authHeader
     ){
