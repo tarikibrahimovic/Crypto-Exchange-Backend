@@ -41,7 +41,6 @@ public class UserService {
     }
 
     public AuthenticationResponse changeUsername(ChangeUsernameRequest request, String token) {
-        System.out.println(jwtService.extractId(token));
         var user = repository.findById(jwtService.extractId(token)).orElseThrow();
         if(repository.existsByUsername(request.getUsername())){
             return AuthenticationResponse.builder()
@@ -109,13 +108,8 @@ public class UserService {
 
     public ImageResponse uploadImage(MultipartFile image, String token) {
         Cloudinary cloudinary = new Cloudinary(CLOUDINARY_URL);
-        System.out.println(CLOUDINARY_URL);
         var user = repository.findById(jwtService.extractId(token)).orElseThrow();
         try {
-            if(user.getPictureUrl() != null){
-                var publicId = user.getPictureUrl().substring(user.getPictureUrl().lastIndexOf("/") + 1, user.getPictureUrl().lastIndexOf("."));
-                cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
-            }
             Map uploadResult = cloudinary.uploader().upload(image.getBytes(), ObjectUtils.emptyMap());
             user.setPictureUrl(uploadResult.get("url").toString());
             repository.save(user);

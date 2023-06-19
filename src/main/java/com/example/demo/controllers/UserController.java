@@ -77,7 +77,6 @@ public class UserController {
             @RequestParam("image") MultipartFile image,
             @RequestHeader("Authorization") String authHeader
     ){
-        System.out.println("Doslo je do kontrolera");
         String token = authHeader.replace("Bearer ", "");
         return ResponseEntity.ok(service.uploadImage(image, token));
     }

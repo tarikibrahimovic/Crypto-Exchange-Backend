@@ -78,7 +78,6 @@ public class AuthenticationService {
                     .build();
         }
         var jwtToken = jwtService.generateToken(user);
-        System.out.println("jwtToken");
         return LoginResponse.builder()
                 .token(jwtToken)
                 .username(user.getUsername())
@@ -110,7 +109,6 @@ public class AuthenticationService {
 
     public AuthenticationResponse sendEmail(SendEmailRequest email) {
         var user = repository.findByEmail(email.getEmail()).orElseThrow();
-        System.out.println(email.getType());
         if(user == null){
             return AuthenticationResponse.builder()
                     .error("User does not exist")
@@ -192,7 +190,6 @@ public class AuthenticationService {
 
     public LoginResponse google(GoogleRegisterRequest request) {
         var user = repository.findByEmail(request.getEmail()).orElseThrow();
-        System.out.println(request.getEmail());
         if(user == null){
             return LoginResponse.builder()
                     .error("User does not exist")
