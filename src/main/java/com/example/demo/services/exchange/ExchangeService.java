@@ -54,26 +54,42 @@ public class ExchangeService {
 
     public ExchangeResponse sellCoin(ExchangeRequest request, String token) {
         var user = userRepository.findById(jwtService.extractId(token)).orElseThrow();
-        var exchange = repository.findByCoinId(request.getCoinId()).orElseThrow();
-        user.setBalance(user.getBalance() + request.getCoinAmount() * request.getCoinPrice());
-        if(exchange.getCoinAmount() > request.getCoinAmount()){
-            exchange.setCoinAmount(exchange.getCoinAmount() - request.getCoinAmount());
-            repository.save(exchange);
+        var exchanges = user.getExchanges();
+        if(exchanges == null){
             return ExchangeResponse.builder()
-                    .message(request.getCoinAmount() + " coins sold")
-                    .balance(user.getBalance())
-                    .exchanges(user.getExchanges())
+                    .error("You don't have this coin")
                     .build();
         }
-        else{
-            repository.delete(exchange);
-            user.removeExchange(exchange);
-            return ExchangeResponse.builder()
-                    .message("Coin sold")
-                    .balance(user.getBalance())
-                    .exchanges(user.getExchanges())
-                    .build();
+        for (var exchange : exchanges){
+            if(exchange.getCoinId().equals(request.getCoinId())){
+                if(exchange.getCoinAmount() < request.getCoinAmount()){
+                    return ExchangeResponse.builder()
+                            .error("You don't have enough coins")
+                            .build();
+                }
+                user.setBalance(user.getBalance() + request.getCoinAmount() * request.getCoinPrice());
+                if(exchange.getCoinAmount() > request.getCoinAmount()){
+                    exchange.setCoinAmount(exchange.getCoinAmount() - request.getCoinAmount());
+                    repository.save(exchange);
+                    return ExchangeResponse.builder()
+                            .message(request.getCoinAmount() + " coins sold")
+                            .balance(user.getBalance())
+                            .exchanges(user.getExchanges())
+                            .build();
+                }
+                else{
+                    repository.delete(exchange);
+                    user.removeExchange(exchange);
+                    return ExchangeResponse.builder()
+                            .message("Coin sold")
+                            .balance(user.getBalance())
+                            .exchanges(user.getExchanges())
+                            .build();
+                }
+            }
         }
-
+        return ExchangeResponse.builder()
+                .error("You don't have this coin")
+                .build();
     }
 }

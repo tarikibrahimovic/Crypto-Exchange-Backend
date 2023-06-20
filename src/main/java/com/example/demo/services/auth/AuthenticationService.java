@@ -93,8 +93,8 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse verify(VerifyRequest request) {
-        var user = repository.findByVerificationToken(request.getToken()).orElseThrow();
-        if(user == null){
+        var user = repository.findByEmail(request.getEmail()).orElseThrow();
+        if(user == null || !user.getVerificationToken().equals(request.getToken())){
             return AuthenticationResponse.builder()
                     .error("Verification token is invalid")
                     .build();
@@ -115,7 +115,7 @@ public class AuthenticationService {
                     .build();
         }
         var random = String.valueOf((int) ((Math.random() * (999999 - 100000)) + 100000));
-        if(email.getType() == "Verification"){
+        if(email.getType().equals("Verification")){
             if(user.getVerificationToken() == null){
                 return AuthenticationResponse.builder()
                         .error("Email is already verified")
@@ -124,7 +124,7 @@ public class AuthenticationService {
             user.setVerificationToken(random);
             repository.save(user);
             emailSender.sendEmail(email.getEmail(), "Hello and welcome to the Crypto Exchange", "Hello " + user.getUsername() + ",\n\n" +
-                    "Your code is: " + random + "\n\n" +
+                    "Your new Verification Code is: " + random + "\n\n" +
                     "Best regards,\n" +
                     "Crypto Exchange Team");
         }
