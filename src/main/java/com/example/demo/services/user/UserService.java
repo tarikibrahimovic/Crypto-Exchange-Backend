@@ -3,6 +3,7 @@ package com.example.demo.services.user;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.example.demo.config.JwtService;
+import com.example.demo.data.repository.ExchangeRepository;
 import com.example.demo.data.repository.UserRepository;
 import com.example.demo.data.requestResponse.auth.AuthenticationResponse;
 import com.example.demo.data.requestResponse.auth.LoginResponse;
@@ -21,6 +22,7 @@ import java.util.Map;
 public class UserService {
 
     private final UserRepository repository;
+    private final ExchangeRepository exchangeRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     @Value("${spring.cloudinary.CLOUDINARY_URL}")
@@ -71,11 +73,18 @@ public class UserService {
 
     public AuthenticationResponse deleteAccount(ChangePasswordRequest request, String token) {
         var user = repository.findById(jwtService.extractId(token)).orElseThrow();
+
         if(!passwordEncoder.matches(request.getPassword(), user.getPassword())){
             return AuthenticationResponse.builder()
                     .error("Wrong password")
                     .build();
         }
+        user.getFavorites().clear();
+        var exchanges = user.getExchanges();
+        for(var exchange : exchanges){
+            exchangeRepository.delete(exchange);
+        }
+        repository.save(user);
         repository.delete(user);
         return AuthenticationResponse.builder()
                 .message("Account deleted!")
